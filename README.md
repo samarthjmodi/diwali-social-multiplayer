@@ -1,64 +1,25 @@
-# Diwali Social multiplayer
+# Diwali Social — one-screen game night
 
-A single-process Node.js party room with a server-rendered static frontend, WebSocket updates, host approvals, privately delivered prompts, role-specific player and TV views, and in-memory state. The original `../Diwali Game Night.html` stays available as an offline fallback.
+Open `public/diwali-party.html` directly in your browser and screen-share it to the TV. No login, guest devices, database, internet, or server is required. Use the same browser/file location to resume saved progress. Download a backup before switching devices or browsers.
 
-## Run locally
+## Flow
+1. Enter player names, choose 2–10 teams, and shuffle. Edit team names and membership, then save.
+2. Pick one of the four games. Host controls reveal, timer, next prompt, and scoring.
+3. Scores shows standings and each manual award. Undo reverses the most recent award.
 
-Requirements: Node.js 22 or newer.
+| Game | Timer | Suggested scoring |
+| --- | --- | --- |
+| Bollywood Bidding War | 60 seconds after bidding | +10 × bid for success; −5 × bid for failure |
+| Reverse Charades | 90 seconds per prompt | +10 correct |
+| Forbidden Words | 90 seconds per prompt | +10 correct; −5 forbidden word |
+| Epic in 15 | 15 minutes preparation, 3 minutes per performance | 0–30 per team: creativity, teamwork, laughs, each out of 10 |
 
-1. Enter this folder: `multiplayer/`
-2. Copy `.env.example` to `.env` and set `HOST_PASSWORD` to a unique secret with at least 12 characters. The committed example is intentionally not a working password.
-3. Run `npm ci` once, then `npm run dev`.
-4. Open `http://127.0.0.1:3000/host` to host. Use the guest entrance at `/` and TV view at `/display`.
-5. Stop the server with Ctrl+C.
+For charades, the guesser faces away from the screen before the host reveals the acting prompt. For Forbidden Words, the guessing teammates face away while the cluegiver sees the target and banned words. The timer does not reveal anything or score automatically. Bidding has open-ended responses judged by the host, rather than a fixed answer key. Epic in 15 shows all five scenarios and suggested roles; assign scenarios with the team dropdowns.
 
-By default, Node binds to localhost for development. For a private-network rehearsal, start with `BIND_HOST=0.0.0.0` and `PORT=3000`; use the computer's local network IP on guests' devices. Some Wi-Fi networks block device-to-device access. Do not forward this unauthenticated local HTTP connection to the public internet.
+State saves in browser localStorage; backups are JSON downloads. Old multiplayer backups use a different format and are not imported. Rosters can be pasted into team setup. Existing multiplayer code remains available in Git history.
 
-The host password lives only in an environment variable. For a local rehearsal, `.env` is ignored by Git. Change the sample value and use a different secret on the hosted service.
+## Hosting (optional)
+`npm start` serves the static game on port 3000 (or PORT). `/`, `/host`, and `/display` all open the same game. Each browser has independent state; project only the host browser. No password is required. `/healthz` is retained for Render. Existing Render service can deploy this commit using Manual Deploy → Deploy latest commit. No paid hosting is necessary for local HTML use; the existing Render service continues billing until you stop/remove its paid resource.
 
-## Deploy to Render
-
-1. Create a **private** GitHub repository and upload the contents of this `multiplayer/` folder. Do not include `.env` or `node_modules/`.
-2. In Render, use **New → Blueprint** to connect the repository and select its `render.yaml`.
-3. Enter a fresh `HOST_PASSWORD` in Render's prompt. Do not reuse the local rehearsal secret. Keep the Blueprint at one paid `starter` instance and avoid automatic deployment during the party.
-4. Wait for `/healthz` to pass. Visit `/host`, sign in, prepare the roster, then check `/` as a guest and `/display` on the TV device.
-5. Run a short rehearsal with test names. Export and test a backup, then clear rehearsal scores and use-card state before real play.
-6. Export the final scores after the party. Delete or suspend the paid Render service after you no longer need its game room.
-
-The app uses Render's `RENDER_EXTERNAL_URL` to validate same-origin host requests and build QR links. It uses one instance because the in-memory room is not shared across instances. No database is needed.
-
-## Room lifecycle and backup
-
-All room content, approved players, scores, card review decisions, and the current round live in process memory. They are lost if the service restarts, is redeployed, or stops. Export a backup after roster/team setup, after reviewing cards, and between games. Store it on the host's device; backups contain roster names, scores, review decisions, and potentially a private in-progress prompt/answer. They never contain host passwords or access tokens. Restoring gives the room a new code, revokes player sessions, and pauses any unfinished timer.
-
-Use **Test rehearsal cards** to include pending content. Every imported prompt starts **pending**; party rounds only use approved cards. Review content with the host's **Review cards** tab before the event. The question list is provisional and has not been tuned to the host's audience or party tone.
-
-## Security and access
-
-- Host password checks, role checks, score changes, card choices, timer deadlines, and quiz submissions are handled on the Node.js server.
-- Approved guests reconnect with a short-lived token. A player name can be approved on one device at a time; the host can release it.
-- Quiz answers and team submissions go only to the host until reveal. A player sees only their own team's submission state.
-- The TV and public game entry never receive the card bank or host password.
-- The host dashboard contains answer keys. Keep it on the host's screen; send the separate TV display to the projector.
-- Backups are unencrypted JSON. Treat them as private party files and remove them when no longer useful.
-- WebSocket clients reconnect automatically; the server is authoritative for clock expiry and rejects late submissions.
-
-## Commands
-
-- `npm ci` — install the pinned runtime dependencies
-- `npm run dev` — run the local server with `.env`
-- `npm start` — run with the environment set by the deployment platform
-- `npm run check` — parse-check the source
-- `npm test` — run the offline room/state and local integration checks
-
-No question or prompt is approved automatically. Keep the existing standalone HTML for a no-network fallback.
-
-### Bollywood Bidding War
-
-The five user-selected categories are approved and ready to play. In **Run the games**, select **Bollywood Bidding War**, choose a category (or random), and prepare the round. Teams call bids aloud; the host records each increasing bid, closes bidding, and starts the fixed 60-second challenge. The highest bidder answers as a team. The host judges distinct valid answers and chooses Success (+10 × bid) or Failed (−5 × bid). Negative totals are supported. The public display and player phones show the category, highest bid, timer, and live scores. Unstarted bidding rounds can be cancelled without a score change. Old backups gain these five categories when restored if they did not already contain them.
-
-### Epic in 15
-
-In **Run the games**, use **Epic in 15 · assign skit scenarios** to choose one approved scenario for each locked team. Each brief includes a high-level starting idea and five suggested roles; teams of four can combine roles. Team members privately receive only their own brief. More teams than scenarios can share a scenario; the setup explains when this happens.
-
-Start the shared 15-minute preparation timer, pause/resume if needed, then finish preparation to begin performances. Select the next team, start its 3-minute performance timer, and award 0–100 host-decided points. Each performance can be scored once, and the game finishes after every team has performed. The shared display shows timers, the current performance's scenario and live total scores, while preparation briefs stay private. Backups preserve assignments, roles, preparation/performance progress and awarded points. Restoring a backup from before these games were added also adds missing approved bidding and skit cards.
+## Development
+`npm run build` bundles public HTML/CSS/scripts into the offline HTML file. Run it after edits. `npm run check` checks JavaScript syntax. `npm test` checks team balancing, scoring/undo, backups, and offline packaging.
