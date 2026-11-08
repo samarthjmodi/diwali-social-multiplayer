@@ -71,6 +71,7 @@ export function createApp({password, cards=sourceCards, publicUrl=process.env.PU
     requireThat(s.role==='host','Host access required.');
     switch(m.action){
       case 'roster':room.roster(m.names);playerSessionsClear();break;
+      case 'teamCount':room.teamCount(m.count);break;
       case 'shuffle':room.shuffle();break;
       case 'move':room.move(m.playerId,m.teamId);break;
       case 'lock':room.lock(m.value);break;

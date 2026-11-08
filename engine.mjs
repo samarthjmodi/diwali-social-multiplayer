@@ -1,5 +1,6 @@
 import { randomBytes, randomInt } from 'node:crypto';
 export const GAMES = ['charades','taboo','five','quiz'];
+const TEAM_NAMES=['Team Pataka','The Ladoo League','Chai Champions','Rangoli Rebels','Diya Dynamos','Mithai Mavericks','Dhol Stars','Rang Barse','Spark Squad','Festival Flames'];
 export const id = () => randomBytes(16).toString('hex');
 export function requireThat(ok, message) { if (!ok) throw new Error(message); }
 const clone = value => structuredClone(value);
@@ -8,22 +9,34 @@ const code = () => randomBytes(4).toString('hex').toUpperCase();
 export class Room {
   constructor(cards) {
     this.cards=clone(cards); this.code=code(); this.players=[];
-    this.teams=['Team Pataka','The Ladoo League','Chai Champions','Rangoli Rebels'].map(name=>({id:id(),name,score:0,captain:null}));
+    this.teams=TEAM_NAMES.slice(0,4).map(name=>({id:id(),name,score:0,captain:null}));
     this.locked=false; this.round=null; this.used=[]; this.history=[]; this.sequence=0;
   }
   idle() {requireThat(!this.round || this.round.phase==='ended','Finish the current round first.');}
   roster(names) {
     this.idle(); requireThat(!this.locked,'Unlock teams before replacing the roster.');
-    requireThat(Array.isArray(names)&&names.length>=4&&names.length<=40,'Enter between 4 and 40 player names.');
+    requireThat(Array.isArray(names)&&names.length>=2&&names.length<=40,'Enter between 2 and 40 player names.');
     requireThat(names.every(n=>text(n,40)),'Each name must contain 1–40 characters.');
     names=names.map(n=>n.trim()); requireThat(new Set(names.map(n=>n.toLowerCase())).size===names.length,'Names must be unique; add a surname or initial.');
     this.players=names.map(name=>({id:id(),name,team:null,approved:false}));
     this.teams.forEach(t=>t.captain=null);this.round=null;
   }
+  teamCount(count) {
+    this.idle();requireThat(!this.locked,'Unlock teams before changing the team count.');
+    requireThat(Number.isInteger(count)&&count>=2&&count<=TEAM_NAMES.length,'Choose between 2 and 10 teams.');
+    if(count===this.teams.length)return;
+    const old=this.teams;
+    this.teams=Array.from({length:count},(_,i)=>old[i]||({id:id(),name:TEAM_NAMES[i],score:0,captain:null}));
+    const kept=new Set(this.teams.map(t=>t.id));
+    for(const p of this.players)p.team=null;
+    for(const t of this.teams)t.captain=null;
+    this.history=this.history.filter(h=>kept.has(h.teamId));
+    this.round=null;
+  }
   shuffle() {
-    this.idle();requireThat(!this.locked,'Teams are locked.');requireThat(this.players.length>=4,'Add the roster first.');
+    this.idle();requireThat(!this.locked,'Teams are locked.');requireThat(this.players.length>=this.teams.length,`Add at least ${this.teams.length} guests to fill every team first.`);
     const list=[...this.players]; for(let i=list.length-1;i>0;i--){const j=randomInt(i+1);[list[i],list[j]]=[list[j],list[i]];}
-    list.forEach((p,i)=>p.team=this.teams[i%4].id);this.teams.forEach(t=>t.captain=this.players.find(p=>p.team===t.id)?.id||null);
+    list.forEach((p,i)=>p.team=this.teams[i%this.teams.length].id);this.teams.forEach(t=>t.captain=this.players.find(p=>p.team===t.id)?.id||null);
   }
   move(playerId,teamId) {
     this.idle();requireThat(!this.locked,'Teams are locked.');const p=this.player(playerId);this.team(teamId);const old=p.team;p.team=teamId;
@@ -32,7 +45,7 @@ export class Room {
   }
   player(playerId){const p=this.players.find(p=>p.id===playerId);requireThat(p,'Player not found.');return p;}
   team(teamId){const t=this.teams.find(t=>t.id===teamId);requireThat(t,'Team not found.');return t;}
-  lock(value){this.idle();if(value)requireThat(this.players.length>=4&&this.players.every(p=>p.team)&&this.teams.every(t=>this.players.some(p=>p.team===t.id)),'Assign players to all four teams first.');this.locked=!!value;}
+  lock(value){this.idle();if(value)requireThat(this.players.length>=this.teams.length&&this.players.every(p=>p.team)&&this.teams.every(t=>this.players.some(p=>p.team===t.id)),`Assign players to all ${this.teams.length} teams first.`);this.locked=!!value;}
   captain(teamId,playerId){this.idle();const t=this.team(teamId);requireThat(this.player(playerId).team===t.id,'Captain must belong to this team.');t.captain=playerId;}
   rename(teamId,name){requireThat(text(name,40),'Use 1–40 characters for the team name.');this.team(teamId).name=name.trim();}
   score(teamId,delta,reason='Host adjustment'){
@@ -113,9 +126,9 @@ export class Room {
     const b=input.room;requireThat(Array.isArray(b.cards)&&b.cards.length>0&&b.cards.length<=2000,'Invalid card bank.');
     const restored=new Room([]);const ids=new Set();
     for(const c of b.cards){requireThat(c&&text(c.id,80)&&!ids.has(c.id)&&GAMES.includes(c.game),'Invalid or duplicate card.');ids.add(c.id);restored.cards.push({id:c.id,game:c.game});restored.updateCard(c.id,c);}
-    requireThat(Array.isArray(b.teams)&&b.teams.length===4,'Backup needs four teams.');
+    requireThat(Array.isArray(b.teams)&&b.teams.length>=2&&b.teams.length<=10,'Backup needs between two and ten teams.');
     requireThat(b.teams.every(t=>t&&text(t.id,80)&&text(t.name,40)&&Number.isInteger(t.score)&&t.score>=0&&t.score<=100000),'Invalid team data.');
-    requireThat(new Set(b.teams.map(t=>t.id)).size===4,'Duplicate team IDs.');
+    requireThat(new Set(b.teams.map(t=>t.id)).size===b.teams.length,'Duplicate team IDs.');
     restored.teams=b.teams.map(t=>({id:t.id,name:t.name,score:t.score,captain:t.captain}));
     requireThat(Array.isArray(b.players)&&b.players.length<=40,'Invalid roster.');
     requireThat(b.players.every(p=>p&&text(p.id,80)&&text(p.name,40)&&(p.team===null||restored.teams.some(t=>t.id===p.team))),'Invalid player data.');
