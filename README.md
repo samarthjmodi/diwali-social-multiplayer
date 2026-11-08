@@ -12,7 +12,7 @@ Open `public/diwali-party.html` directly in your browser and screen-share it to 
 | Bollywood Bidding War | 60 seconds after bidding | +10 × bid for success; −5 × bid for failure |
 | Reverse Charades | 90 seconds per prompt | +10 correct |
 | Forbidden Words | 90 seconds per prompt | +10 correct; −5 forbidden word |
-| Epic in 15 | 15 minutes preparation, 3 minutes per performance | 0–30 per team: creativity, teamwork, laughs, each out of 10 |
+| Epic in 15 | 15 minutes preparation, 3 minutes per performance | 0–150 per team: creativity, teamwork, laughs, each out of 50 |
 
 For charades, the guesser faces away from the screen before the host reveals the acting prompt. For Forbidden Words, the guessing teammates face away while the cluegiver sees the target and banned words. The timer does not reveal anything or score automatically. Bidding has open-ended responses judged by the host, rather than a fixed answer key. Epic in 15 shows all five scenarios and suggested roles; assign scenarios with the team dropdowns.
 
