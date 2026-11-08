@@ -50,7 +50,7 @@ export function createApp({password, cards=sourceCards, publicUrl=process.env.PU
           const token=issue('player',p.id);json(res,200,{token});broadcast();return;
         }
         if(path==='/api/backup'&&req.method==='GET'){host(req);res.setHeader('Content-Disposition','attachment; filename="diwali.backup.json"');return json(res,200,room.backup());}
-        if(path==='/api/restore'&&req.method==='POST'){host(req);const replacement=Room.restore(await body(req));for(const c of sourceCards.filter(c=>c.game==='bidding'))if(!replacement.cards.some(x=>x.id===c.id))replacement.cards.push(structuredClone(c));playerSessionsClear();room=replacement;json(res,200,{ok:true});broadcast();return;}
+        if(path==='/api/restore'&&req.method==='POST'){host(req);const replacement=Room.restore(await body(req));for(const c of sourceCards.filter(c=>['bidding','skit'].includes(c.game)))if(!replacement.cards.some(x=>x.id===c.id))replacement.cards.push(structuredClone(c));playerSessionsClear();room=replacement;json(res,200,{ok:true});broadcast();return;}
         if(path==='/api/qr'&&req.method==='GET'){host(req);const target=origin(req)+'/?code='+room.code;return json(res,200,{url:target,image:await QRCode.toDataURL(target,{width:220,margin:2})});}
         if(path==='/api/logout'&&req.method==='POST'){const token=(req.headers.authorization||'').replace(/^Bearer /,'');revoke(token);json(res,200,{ok:true});broadcast();return;}
         return json(res,404,{error:'Not found.'});
@@ -86,6 +86,9 @@ export function createApp({password, cards=sourceCards, publicUrl=process.env.PU
       case 'bid':room.bid(m.teamId,m.value);break;
       case 'closeBidding':room.closeBidding();break;
       case 'cancelBidding':room.cancelBidding();break;
+      case 'finishSkitPrep':room.finishSkitPrep();break;
+      case 'performSkit':room.performSkit(m.teamId);break;
+      case 'scoreSkit':room.scoreSkit(m.teamId,m.value);break;
       case 'begin':room.begin();break;
       case 'pause':room.pause();break;
       case 'correct':room.nextCard(true);break;

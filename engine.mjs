@@ -1,5 +1,5 @@
 import { randomBytes, randomInt } from 'node:crypto';
-export const GAMES = ['bidding','charades','taboo','five','quiz'];
+export const GAMES = ['skit','bidding','charades','taboo','five','quiz'];
 const TEAM_NAMES=['Team Pataka','The Ladoo League','Chai Champions','Rangoli Rebels','Diya Dynamos','Mithai Mavericks','Dhol Stars','Rang Barse','Spark Squad','Festival Flames'];
 export const id = () => randomBytes(16).toString('hex');
 export function requireThat(ok, message) { if (!ok) throw new Error(message); }
@@ -61,6 +61,11 @@ export class Room {
     if(c.game==='quiz')requireThat(text(fields.answer,300),'Quiz cards need an answer.');
     requireThat(Array.isArray(fields.forbidden)&&fields.forbidden.length<=8&&fields.forbidden.every(w=>text(w,50)),'Use up to eight forbidden words.');
     if(c.game==='taboo')requireThat(fields.forbidden.length>=1,'Forbidden Words needs at least one banned word.');
+    if(c.game==='skit'){
+      const brief=fields.brief??c.brief??'',roles=fields.roles??c.roles??[];
+      requireThat(text(brief,500)&&Array.isArray(roles)&&roles.length>=4&&roles.length<=5&&roles.every(r=>text(r,120)),'Skits need an idea and 4–5 suggested roles.');
+      Object.assign(c,{brief:brief.trim(),roles:roles.map(r=>r.trim())});
+    }
     Object.assign(c,{prompt:fields.prompt.trim(),answer:fields.answer.trim(),forbidden:fields.forbidden.map(w=>w.trim()),status:fields.status});
   }
   draw(game,rehearsal){const pool=this.cards.filter(c=>c.game===game&&(c.status==='approved'||(rehearsal&&c.status==='pending')));
@@ -68,9 +73,17 @@ export class Room {
     const fresh=pool.filter(c=>!this.used.includes(c.id));requireThat(fresh.length,'This deck is exhausted. Reset used cards between rounds to replay.');
     const c=fresh[randomInt(fresh.length)];this.used.push(c.id);return clone(c);
   }
-  start({game,teamId,playerId,cardId,duration=60,rehearsal=false}){
+  start({game,teamId,playerId,cardId,assignments,duration=60,rehearsal=false}){
     this.idle();requireThat(this.locked,'Lock your teams before starting.');requireThat(GAMES.includes(game),'Unknown game.');
     requireThat([30,45,60,90].includes(duration),'Choose a supported turn length.');
+    if(game==='skit'){
+      const pool=this.cards.filter(c=>c.game==='skit'&&!this.used.includes(c.id)&&(c.status==='approved'||(rehearsal&&c.status==='pending')));
+      requireThat(pool.length,'No unused skit scenarios. Review cards or reset used cards.');
+      for(let i=pool.length-1;i>0;i--){const j=randomInt(i+1);[pool[i],pool[j]]=[pool[j],pool[i]];}
+      const selected={};this.teams.forEach((t,i)=>{const card=assignments?pool.find(c=>c.id===assignments[t.id]):pool[i%pool.length];requireThat(card,'Select an unused approved scenario for every team.');selected[t.id]=card.id;});
+      this.used.push(...new Set(Object.values(selected)));
+      this.round={id:id(),game,card:clone(pool.find(c=>c.id===selected[this.teams[0].id])),assignments:selected,stage:'prep',teamId:null,playerId:null,phase:'ready',duration:900,remaining:null,deadline:null,rehearsal:!!rehearsal,points:0,submissions:{},judged:[],log:[],skitScores:{}};return;
+    }
     if(game==='bidding'){
       let card;
       if(cardId){card=this.cards.find(c=>c.id===cardId&&c.game==='bidding'&&(c.status==='approved'||(rehearsal&&c.status==='pending')));requireThat(card&&!this.used.includes(cardId),'Choose an unused approved bidding prompt.');card=clone(card);this.used.push(cardId);}else card=this.draw(game,!!rehearsal);
@@ -84,6 +97,9 @@ export class Room {
   bid(teamId,value){const r=this.roundRequired();requireThat(r.game==='bidding'&&r.phase==='bidding','Bidding is closed.');this.team(teamId);requireThat(Number.isInteger(value)&&value>r.bid&&value<=100,'Bid must exceed the current highest bid, up to 100.');r.bid=value;r.teamId=teamId;r.bids.push({teamId,value});}
   closeBidding(){const r=this.roundRequired();requireThat(r.game==='bidding'&&r.phase==='bidding'&&r.bid>0,'Record a winning bid first.');r.phase='ready';}
   cancelBidding(){const r=this.roundRequired();requireThat(r.game==='bidding'&&['bidding','ready'].includes(r.phase),'Only an unstarted bidding challenge can be cancelled.');r.phase='ended';r.cancelled=true;}
+  finishSkitPrep(){const r=this.roundRequired();requireThat(r.game==='skit'&&r.stage==='prep','Skit preparation is not open.');Object.assign(r,{stage:'performance',phase:'awaiting',duration:180,deadline:null,remaining:null});}
+  performSkit(teamId){const r=this.roundRequired();requireThat(r.game==='skit'&&r.stage==='performance'&&r.phase==='awaiting','Finish preparation or score the current performance first.');this.team(teamId);requireThat(!r.judged.includes(teamId),'This team has already performed.');Object.assign(r,{teamId,phase:'ready',duration:180,remaining:null,deadline:null});}
+  scoreSkit(teamId,value){const r=this.roundRequired();requireThat(r.game==='skit'&&r.stage==='performance'&&r.teamId===teamId&&['active','paused','expired'].includes(r.phase),'Start this team’s performance timer before scoring.');requireThat(!r.judged.includes(teamId),'This team has already been scored.');requireThat(Number.isInteger(value)&&value>=0&&value<=100,'Award a whole number from 0 to 100 points.');this.score(teamId,value,'Epic in 15 performance');r.skitScores[teamId]=value;r.judged.push(teamId);Object.assign(r,{phase:r.judged.length===this.teams.length?'ended':'awaiting',teamId:null,deadline:null,remaining:null});}
   begin(now=Date.now()){const r=this.roundRequired();requireThat(['ready','paused'].includes(r.phase),'Round is not ready to start.');r.deadline=now+(r.remaining??r.duration*1000);r.remaining=null;r.phase='active';}
   expire(now=Date.now()){const r=this.round;if(r?.phase==='active'&&now>=r.deadline){r.phase='expired';r.deadline=null;r.remaining=0;return true;}return false;}
   pause(now=Date.now()){this.expire(now);const r=this.roundRequired();requireThat(r.phase==='active','Only a running round can be paused.');r.remaining=Math.max(0,r.deadline-now);r.deadline=null;r.phase='paused';}
@@ -106,6 +122,7 @@ export class Room {
     r.judged.push(teamId);if(correct)this.score(teamId,3,'Quiz answer');
   }
   end(success=false){const r=this.roundRequired();requireThat(r.phase!=='ended','This round is already finished.');
+    requireThat(r.game!=='skit','Score each team’s skit to finish this game.');
     if(r.game==='bidding'){requireThat(['active','expired','paused'].includes(r.phase),'Close bidding and start the one-minute clock first.');const delta=r.bid*(success?10:-5);this.score(r.teamId,delta,`Bollywood bid ${r.bid}: ${success?'success':'failure'}`);r.points=delta;r.success=!!success;}
     if(r.game==='quiz')requireThat(r.phase==='revealed','Reveal and judge before finishing the quiz round.');
     if(r.game==='five')requireThat(['active','expired','paused'].includes(r.phase),'Start the five-second clock first.');
@@ -120,6 +137,13 @@ export class Room {
     if(host){result.history=clone(this.history);result.cards=clone(this.cards);result.used=[...this.used];}
     if(!this.round)return result;
     const r=this.round,v={id:r.id,game:r.game,phase:r.phase,teamId:r.teamId,playerId:r.playerId,deadline:r.deadline,duration:r.duration,remaining:r.remaining,rehearsal:r.rehearsal,points:r.points};
+    if(r.game==='skit'){
+      const scenario=teamId=>{const c=this.cards.find(c=>c.id===r.assignments[teamId]);return {id:c.id,prompt:c.prompt,brief:c.brief,roles:clone(c.roles)};};
+      Object.assign(v,{stage:r.stage,judged:[...r.judged],skitScores:clone(r.skitScores),prompt:r.stage==='prep'?'Teams are preparing their skits.':r.teamId?scenario(r.teamId).prompt:r.phase==='ended'?'All performances complete.':'The next team is getting ready.'});
+      if(host)v.assignments=Object.fromEntries(this.teams.map(t=>[t.id,scenario(t.id)]));
+      if(p?.team)v.assignment=scenario(p.team);
+      result.round=v;return result;
+    }
     const privateAllowed=host||(p&&p.team===r.teamId&&(r.game==='taboo'?p.id===r.playerId:r.game==='charades'?p.id!==r.playerId:false));
     if(r.game==='bidding')Object.assign(v,{bid:r.bid,bids:clone(r.bids),success:r.success,cancelled:r.cancelled});
     const publicPrompt=['five','quiz','bidding'].includes(r.game);
@@ -150,14 +174,22 @@ export class Room {
     restored.history=[];restored.lock(!!b.locked);
     if(b.round&&b.round.phase!=='ended'){
       const r=b.round;requireThat(GAMES.includes(r.game)&&ids.has(r.card?.id),'Invalid saved round.');
-      requireThat([5,30,45,60,90].includes(r.duration)&&Number.isInteger(r.points)&&r.points>=0&&r.points<=2000,'Invalid saved timer or points.');
-      if(!['quiz','bidding'].includes(r.game))requireThat(restored.players.some(p=>p.id===r.playerId&&p.team===r.teamId),'Invalid saved round player.');
+      requireThat([5,30,45,60,90,180,900].includes(r.duration)&&Number.isInteger(r.points)&&r.points>=0&&r.points<=2000,'Invalid saved timer or points.');
+      if(!['quiz','bidding','skit'].includes(r.game))requireThat(restored.players.some(p=>p.id===r.playerId&&p.team===r.teamId),'Invalid saved round player.');
       const card=restored.cards.find(c=>c.id===r.card.id);requireThat(card.game===r.game,'Card does not match game.');
       const remaining=r.phase==='active'?Math.max(0,r.deadline-Date.parse(input.savedAt)):r.remaining??r.duration*1000;
       requireThat(Number.isFinite(remaining)&&remaining>=0&&remaining<=r.duration*1000,'Invalid remaining time.');
       const submissions={};for(const [teamId,s] of Object.entries(r.submissions||{})){requireThat(restored.teams.some(t=>t.id===teamId)&&text(s.answer,300)&&restored.players.some(p=>p.id===s.playerId&&p.team===teamId)&&Number.isFinite(s.at),'Invalid saved answer.');submissions[teamId]={answer:s.answer,playerId:s.playerId,at:s.at};}
       requireThat(Array.isArray(r.judged)&&r.judged.every(t=>restored.teams.some(x=>x.id===t)),'Invalid judging state.');
       restored.round={id:id(),game:r.game,card:clone(card),teamId:r.teamId,playerId:r.playerId,duration:r.duration,points:r.points,rehearsal:!!r.rehearsal,phase:r.phase==='revealed'?'revealed':'paused',deadline:null,remaining,submissions,judged:[...new Set(r.judged)],log:[]};
+      if(r.game==='skit'){
+        requireThat(['prep','performance'].includes(r.stage)&&r.duration===(r.stage==='prep'?900:180),'Invalid skit stage or timer.');
+        requireThat(r.assignments&&Object.keys(r.assignments).length===restored.teams.length&&restored.teams.every(t=>restored.cards.some(c=>c.id===r.assignments[t.id]&&c.game==='skit')),'Invalid skit assignments.');
+        requireThat(['ready','active','paused','expired',...(r.stage==='performance'?['awaiting']:[])].includes(r.phase),'Invalid skit phase.');
+        requireThat((r.stage==='prep'||r.phase==='awaiting')?r.teamId===null:restored.teams.some(t=>t.id===r.teamId&&!r.judged.includes(t.id)),'Invalid performing team.');
+        requireThat(r.skitScores&&Object.keys(r.skitScores).length===r.judged.length&&new Set(r.judged).size===r.judged.length&&r.judged.every(t=>Number.isInteger(r.skitScores[t])&&r.skitScores[t]>=0&&r.skitScores[t]<=100)&&(r.stage!=='prep'||r.judged.length===0),'Invalid skit scores.');
+        Object.assign(restored.round,{stage:r.stage,assignments:clone(r.assignments),skitScores:clone(r.skitScores),phase:['ready','awaiting','expired'].includes(r.phase)?r.phase:'paused'});
+      }
       if(r.game==='bidding'){
         requireThat(r.duration===60&&Number.isInteger(r.bid)&&r.bid>=0&&r.bid<=100,'Invalid saved bid.');
         requireThat(['bidding','ready','active','paused','expired'].includes(r.phase),'Invalid bidding phase.');

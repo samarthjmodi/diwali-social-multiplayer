@@ -1582,5 +1582,85 @@
     "answer": "",
     "forbidden": [],
     "status": "approved"
+  },
+  {
+    "id": "skit-1",
+    "game": "skit",
+    "prompt": "A travel agency sells a “14-year forest getaway” holiday package.",
+    "brief": "Sell forest life as the ultimate escape from city stress. The brochure promises luxury; the guide keeps revealing the reality. Customers disagree about Wi-Fi, food, comfort, and whether fourteen years is a flexible booking.",
+    "roles": [
+      "Overconfident travel salesperson",
+      "Luxury traveller with very high expectations",
+      "Budget traveller negotiating every fee",
+      "Survival guide who keeps telling the truth",
+      "Travel influencer asking about photo opportunities"
+    ],
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "skit-2",
+    "game": "skit",
+    "prompt": "Hanuman appears on a podcast about his most unbelievable work assignment.",
+    "brief": "An epic mission becomes a casual podcast interview. Extraordinary achievements collide with ordinary questions about training, travel expenses, work-life balance, and the sponsor’s product. Let the interruptions get increasingly ridiculous.",
+    "roles": [
+      "Hanuman, treating extraordinary feats as routine",
+      "Podcast host desperate for a viral clip",
+      "Producer/fact-checker struggling to keep up",
+      "Sponsor representative forcing in product mentions",
+      "Overenthusiastic caller with unexpected questions"
+    ],
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "skit-3",
+    "game": "skit",
+    "prompt": "A customer-service team handles complaints about a flying chariot airline.",
+    "brief": "A routine complaint desk turns chaotic as passengers question delays, baggage fees, seat upgrades, and the route. Staff try to defend airline policies while the pilot provides explanations that only make things worse.",
+    "roles": [
+      "Customer-service agent trying to remain polite",
+      "Pilot with very unhelpful explanations",
+      "VIP passenger demanding special treatment",
+      "Budget passenger disputing every hidden charge",
+      "Travel vlogger broadcasting the whole complaint"
+    ],
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "skit-4",
+    "game": "skit",
+    "prompt": "A real-estate agency tries to sell property in Lanka after Hanuman’s visit.",
+    "brief": "The agency markets a recently damaged property as an incredible opportunity. Every obvious problem becomes a premium feature, while buyers, an inspector, and a local resident reveal what the listing conveniently forgot to mention.",
+    "roles": [
+      "Relentlessly positive real-estate agent",
+      "First-time buyer with practical questions",
+      "Investor looking for an outrageous bargain",
+      "Building inspector refusing to sugarcoat anything",
+      "Local resident who knows what really happened"
+    ],
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "skit-5",
+    "game": "skit",
+    "prompt": "A vanar sena recruitment drive attracts some very questionable candidates.",
+    "brief": "The army needs reliable recruits for an enormous mission. Applicants are more interested in remote work, personal branding, or their workout routine. Recruiters must decide who, if anyone, is actually useful.",
+    "roles": [
+      "Recruiter trying to run a professional interview",
+      "Commander who needs people who can actually help",
+      "Gym enthusiast who turns every task into a fitness challenge",
+      "Candidate determined to make the mission fully remote",
+      "Influencer applying mainly for the content"
+    ],
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
   }
 ]

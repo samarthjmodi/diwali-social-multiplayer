@@ -37,6 +37,15 @@ test('host manages bidding while guests and TV receive timer and negative scores
  host.send('begin');const active=(await tv.wait(m=>m.type==='state'&&m.state.round?.phase==='active')).state;assert.equal(active.round.duration,60);assert.ok(active.round.deadline);
  host.send('end',{success:false});await tv.wait(m=>m.type==='state'&&m.state.teams[0].score===-40);
  const backup=await x.api('/api/backup',undefined,x.hostToken);assert.equal((await x.api('/api/restore',backup.data,x.hostToken)).status,200);assert.equal(x.app.room.teams[0].score,-40);
- const old=structuredClone(backup.data);old.room.cards=old.room.cards.filter(c=>c.game!=='bidding');old.room.used=[];old.room.round=null;
- assert.equal((await x.api('/api/restore',old,x.hostToken)).status,200);assert.equal(x.app.room.cards.filter(c=>c.game==='bidding').length,5);
+ const old=structuredClone(backup.data);old.room.cards=old.room.cards.filter(c=>!['bidding','skit'].includes(c.game));old.room.used=[];old.room.round=null;
+ assert.equal((await x.api('/api/restore',old,x.hostToken)).status,200);assert.equal(x.app.room.cards.filter(c=>c.game==='bidding').length,5);assert.equal(x.app.room.cards.filter(c=>c.game==='skit').length,5);
+});
+
+test('skit briefs stay private per team and host controls timers and performance scoring',async t=>{
+ const x=await setup(t),host=await x.connect(x.hostToken);x.app.room.roster(['A','B','C','D']);x.app.room.shuffle();x.app.room.lock(true);
+ const guests=[];for(const p of x.app.room.players.slice(0,2)){const j=await x.api('/api/join',{code:x.app.room.code,playerId:p.id});const guest=await x.connect(j.data.token);host.send('approve',{requestId:j.data.token});await guest.wait(m=>m.type==='state'&&!m.state.pending);guests.push(guest);}
+ const display=await x.api('/api/join',{code:x.app.room.code,role:'display'}),tv=await x.connect(display.data.token);
+ host.send('start',{game:'skit'});const states=await Promise.all(guests.map(g=>g.wait(m=>m.type==='state'&&m.state.round?.game==='skit')));assert.notEqual(states[0].state.round.assignment.id,states[1].state.round.assignment.id);assert.equal(states[0].state.round.assignments,undefined);const publicState=(await tv.wait(m=>m.type==='state'&&m.state.round?.game==='skit')).state;assert.equal(publicState.round.assignment,undefined);
+ guests[0].send('finishSkitPrep');assert.match((await guests[0].wait(m=>m.type==='error')).message,/Host access/);
+ host.send('begin');await tv.wait(m=>m.type==='state'&&m.state.round?.phase==='active'&&m.state.round.duration===900);host.send('finishSkitPrep');await host.wait(m=>m.type==='state'&&m.state.round?.phase==='awaiting');const team=x.app.room.teams[0];host.send('performSkit',{teamId:team.id});await host.wait(m=>m.type==='state'&&m.state.round?.phase==='ready'&&m.state.round.duration===180);host.send('begin');await host.wait(m=>m.type==='state'&&m.state.round?.phase==='active'&&m.state.round.duration===180);host.send('scoreSkit',{teamId:team.id,value:75});await tv.wait(m=>m.type==='state'&&m.state.teams[0].score===75);
 });

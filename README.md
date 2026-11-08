@@ -56,3 +56,9 @@ No question or prompt is approved automatically. Keep the existing standalone HT
 ### Bollywood Bidding War
 
 The five user-selected categories are approved and ready to play. In **Run the games**, select **Bollywood Bidding War**, choose a category (or random), and prepare the round. Teams call bids aloud; the host records each increasing bid, closes bidding, and starts the fixed 60-second challenge. The highest bidder answers as a team. The host judges distinct valid answers and chooses Success (+10 × bid) or Failed (−5 × bid). Negative totals are supported. The public display and player phones show the category, highest bid, timer, and live scores. Unstarted bidding rounds can be cancelled without a score change. Old backups gain these five categories when restored if they did not already contain them.
+
+### Epic in 15
+
+In **Run the games**, use **Epic in 15 · assign skit scenarios** to choose one approved scenario for each locked team. Each brief includes a high-level starting idea and five suggested roles; teams of four can combine roles. Team members privately receive only their own brief. More teams than scenarios can share a scenario; the setup explains when this happens.
+
+Start the shared 15-minute preparation timer, pause/resume if needed, then finish preparation to begin performances. Select the next team, start its 3-minute performance timer, and award 0–100 host-decided points. Each performance can be scored once, and the game finishes after every team has performed. The shared display shows timers, the current performance's scenario and live total scores, while preparation briefs stay private. Backups preserve assignments, roles, preparation/performance progress and awarded points. Restoring a backup from before these games were added also adds missing approved bidding and skit cards.

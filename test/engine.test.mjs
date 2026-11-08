@@ -12,7 +12,7 @@ test('host can change team count before locking and shuffle attendance evenly',(
   assert.throws(()=>r.teamCount(2),/Unlock teams/);r.lock(false);r.teamCount(5);r.shuffle();assert.equal(r.teams.length,5);assert.equal(r.players.filter(p=>p.team).length,19);
   assert.throws(()=>r.teamCount(1),/between 2 and 10/);assert.throws(()=>r.teamCount(11),/between 2 and 10/);
 });
-test('original decks require review and rehearsal is explicit',()=>{const r=setup();assert.equal(r.cards.filter(c=>c.game!=='bidding'&&c.status==='approved').length,0);assert.throws(()=>r.start({game:'quiz'}),/No eligible cards/);start(r,'quiz');assert.equal(r.round.rehearsal,true);});
+test('original decks require review and rehearsal is explicit',()=>{const r=setup();assert.equal(r.cards.filter(c=>!['bidding','skit'].includes(c.game)&&c.status==='approved').length,0);assert.throws(()=>r.start({game:'quiz'}),/No eligible cards/);start(r,'quiz');assert.equal(r.round.rehearsal,true);});
 test('private taboo prompt reaches only host and clue giver',()=>{const r=setup();const {t,p}=start(r,'taboo');for(const other of r.players){const v=r.view({role:'player',playerId:other.id});assert.equal(!!v.round.prompt,other.id===p.id);assert.equal(!!v.round.forbidden,other.id===p.id);assert.equal(v.cards,undefined);}assert.equal(r.view({role:'display'}).round.prompt,undefined);assert.ok(r.view({role:'host'}).round.prompt);});
 test('reverse charades hides the prompt from the guesser, TV and opposing teams',()=>{const r=setup();const {t,p}=start(r,'charades');for(const other of r.players)assert.equal(!!r.view({role:'player',playerId:other.id}).round.prompt,other.team===t.id&&other.id!==p.id);assert.equal(r.view({role:'display'}).round.prompt,undefined);});
 test('pending guest cannot read the roster, scores or round',()=>{const r=setup();start(r,'quiz');const p=r.players[0];p.approved=false;const v=r.view({role:'player',playerId:p.id});assert.equal(v.pending,true);assert.equal(v.round,undefined);assert.equal(v.players,undefined);assert.equal(v.cards,undefined);});
@@ -41,4 +41,23 @@ test('bidding is public and backup restores bidding, ready and paused challenges
  r.closeBidding();assert.equal(Room.restore(r.backup()).round.phase,'ready');r.begin();restored=Room.restore(r.backup());assert.equal(restored.round.phase,'paused');assert.equal(restored.round.bid,6);
  restored.begin();restored.end(false);assert.equal(restored.teams[0].score,-70);
  const bad=r.backup();bad.room.round.bid=12;assert.throws(()=>Room.restore(bad),/mismatch/);
+});
+
+test('skit assigns private team briefs with five roles and runs shared preparation',()=>{
+ const r=setup();assert.equal(r.cards.filter(c=>c.game==='skit'&&c.status==='approved').length,5);r.start({game:'skit'});
+ assert.equal(r.round.duration,900);assert.equal(new Set(Object.values(r.round.assignments)).size,r.teams.length);
+ for(const p of r.players){const v=r.view({role:'player',playerId:p.id});assert.equal(v.round.assignment.id,r.round.assignments[p.team]);assert.equal(v.round.assignment.roles.length,5);assert.equal(v.round.assignments,undefined);assert.ok(v.round.assignment.brief);}
+ const tv=r.view({role:'display'});assert.equal(tv.round.assignment,undefined);assert.equal(tv.round.assignments,undefined);for(const id of Object.values(r.round.assignments)){assert.ok(!JSON.stringify(tv).includes(r.cards.find(c=>c.id===id).prompt));}
+ assert.equal(Object.keys(r.view({role:'host'}).round.assignments).length,4);r.begin(1000);assert.equal(r.round.deadline,901000);r.pause(61000);assert.equal(r.round.remaining,840000);r.begin(1000000);r.expire(1840000);assert.equal(r.round.phase,'expired');
+});
+test('skits validate assignments and score each performance once before moving to next team',()=>{
+ const r=setup();const used=r.used.length;assert.throws(()=>r.start({game:'skit',assignments:{}}),/every team/);assert.equal(r.used.length,used);r.start({game:'skit'});
+ assert.throws(()=>r.performSkit(r.teams[0].id),/preparation/);r.finishSkitPrep();assert.equal(r.round.phase,'awaiting');
+ for(const [i,t] of r.teams.entries()){r.performSkit(t.id);assert.equal(r.round.duration,180);assert.throws(()=>r.scoreSkit(t.id,10),/timer/);r.begin();assert.throws(()=>r.scoreSkit(t.id,101),/0 to 100/);assert.throws(()=>r.scoreSkit(t.id,-5),/0 to 100/);r.scoreSkit(t.id,20+i);assert.equal(t.score,20+i);assert.throws(()=>r.scoreSkit(t.id,20),/timer/);if(i<r.teams.length-1)assert.throws(()=>r.performSkit(t.id),/already performed/);}
+ assert.equal(r.round.phase,'ended');assert.equal(Object.keys(r.round.skitScores).length,4);
+});
+test('skit backups preserve roles, private assignments and partially scored performances',()=>{
+ const r=setup();r.start({game:'skit'});let restored=Room.restore(r.backup());assert.equal(restored.round.phase,'ready');assert.equal(restored.round.duration,900);assert.ok(restored.cards.find(c=>c.game==='skit').brief);assert.equal(restored.cards.find(c=>c.game==='skit').roles.length,5);
+ r.begin();restored=Room.restore(r.backup());assert.equal(restored.round.phase,'paused');r.finishSkitPrep();restored=Room.restore(r.backup());assert.equal(restored.round.phase,'awaiting');const t=r.teams[0];r.performSkit(t.id);r.begin();r.scoreSkit(t.id,60);restored=Room.restore(r.backup());assert.equal(restored.round.skitScores[t.id],60);assert.equal(restored.team(t.id).score,60);assert.throws(()=>restored.performSkit(t.id),/already performed/);
+ const bad=r.backup();bad.room.round.assignments[t.id]='bidding-1';assert.throws(()=>Room.restore(bad),/assignments/);
 });
