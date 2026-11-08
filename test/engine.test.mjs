@@ -12,7 +12,7 @@ test('host can change team count before locking and shuffle attendance evenly',(
   assert.throws(()=>r.teamCount(2),/Unlock teams/);r.lock(false);r.teamCount(5);r.shuffle();assert.equal(r.teams.length,5);assert.equal(r.players.filter(p=>p.team).length,19);
   assert.throws(()=>r.teamCount(1),/between 2 and 10/);assert.throws(()=>r.teamCount(11),/between 2 and 10/);
 });
-test('no card is party-approved by default and rehearsal is explicit',()=>{const r=setup();assert.equal(r.cards.filter(c=>c.status==='approved').length,0);assert.throws(()=>r.start({game:'quiz'}),/No eligible cards/);start(r,'quiz');assert.equal(r.round.rehearsal,true);});
+test('original decks require review and rehearsal is explicit',()=>{const r=setup();assert.equal(r.cards.filter(c=>c.game!=='bidding'&&c.status==='approved').length,0);assert.throws(()=>r.start({game:'quiz'}),/No eligible cards/);start(r,'quiz');assert.equal(r.round.rehearsal,true);});
 test('private taboo prompt reaches only host and clue giver',()=>{const r=setup();const {t,p}=start(r,'taboo');for(const other of r.players){const v=r.view({role:'player',playerId:other.id});assert.equal(!!v.round.prompt,other.id===p.id);assert.equal(!!v.round.forbidden,other.id===p.id);assert.equal(v.cards,undefined);}assert.equal(r.view({role:'display'}).round.prompt,undefined);assert.ok(r.view({role:'host'}).round.prompt);});
 test('reverse charades hides the prompt from the guesser, TV and opposing teams',()=>{const r=setup();const {t,p}=start(r,'charades');for(const other of r.players)assert.equal(!!r.view({role:'player',playerId:other.id}).round.prompt,other.team===t.id&&other.id!==p.id);assert.equal(r.view({role:'display'}).round.prompt,undefined);});
 test('pending guest cannot read the roster, scores or round',()=>{const r=setup();start(r,'quiz');const p=r.players[0];p.approved=false;const v=r.view({role:'player',playerId:p.id});assert.equal(v.pending,true);assert.equal(v.round,undefined);assert.equal(v.players,undefined);assert.equal(v.cards,undefined);});
@@ -22,5 +22,23 @@ test('guessing points are banked once; expiration blocks late scores',()=>{const
 test('backup restore strips approvals, creates new room and round IDs, pauses progress',()=>{const r=setup();start(r,'quiz');r.begin();r.submit(r.teams[0].captain,'saved answer',r.round.id);r.score(r.teams[0].id,7);const b=r.backup(),restored=Room.restore(JSON.parse(JSON.stringify(b)));assert.notEqual(restored.code,r.code);assert.notEqual(restored.round.id,r.round.id);assert.ok(restored.players.every(p=>!p.approved));assert.equal(restored.round.phase,'paused');assert.equal(restored.teams[0].score,7);assert.equal(restored.round.submissions[r.teams[0].id].answer,'saved answer');assert.deepEqual(restored.history,[]);});
 test('backup restore preserves a host-selected team count',()=>{const r=setup(18);r.lock(false);r.teamCount(3);r.shuffle();r.lock(true);const restored=Room.restore(r.backup());assert.equal(restored.teams.length,3);assert.equal(restored.players.length,18);assert.ok(restored.players.every(p=>restored.teams.some(t=>t.id===p.team)));});
 test('revealed partially judged quiz restores without awarding twice',()=>{const r=setup();start(r,'quiz');r.begin();r.submit(r.teams[0].captain,'saved',r.round.id);r.reveal();r.judge(r.teams[0].id,true);const restored=Room.restore(r.backup());assert.equal(restored.round.phase,'revealed');assert.equal(restored.teams[0].score,3);assert.throws(()=>restored.judge(restored.teams[0].id,true),/already/);});
-test('malformed backups are rejected before replacing room',()=>{const r=setup();const b=r.backup();b.room.teams[0].score=-10;assert.throws(()=>Room.restore(b),/Invalid team/);const c=r.backup();c.room.cards[0].status='arbitrary';assert.throws(()=>Room.restore(c),/review status/);});
+test('malformed backups are rejected before replacing room',()=>{const r=setup();const b=r.backup();b.room.teams[0].score=-100001;assert.throws(()=>Room.restore(b),/Invalid team/);const c=r.backup();c.room.cards[0].status='arbitrary';assert.throws(()=>Room.restore(c),/review status/);});
 test('reviewed edits and exclusions survive backup and govern selection',()=>{const r=setup();const c=r.cards.find(c=>c.game==='quiz');r.updateCard(c.id,{...c,prompt:'Our party question?',answer:'A reviewed answer',status:'approved'});r.start({game:'quiz'});assert.equal(r.round.card.id,c.id);const restored=Room.restore(r.backup());assert.equal(restored.cards.find(x=>x.id===c.id).answer,'A reviewed answer');});
+
+test('bidding selects only the five approved categories, records rising bids and scores exactly once',()=>{
+ const r=setup();assert.equal(r.cards.filter(c=>c.game==='bidding'&&c.status==='approved').length,5);
+ r.start({game:'bidding',cardId:'bidding-1'});assert.equal(r.round.phase,'bidding');assert.equal(r.round.duration,60);
+ assert.throws(()=>r.begin(),/not ready/);assert.throws(()=>r.closeBidding(),/winning bid/);
+ const a=r.teams[0],b=r.teams[1];r.bid(a.id,3);r.bid(b.id,12);assert.throws(()=>r.bid(a.id,12),/exceed/);assert.throws(()=>r.bid(a.id,2.5),/exceed/);
+ r.closeBidding();assert.throws(()=>r.bid(a.id,13),/closed/);assert.throws(()=>r.end(true),/start/);
+ r.begin(1000);assert.equal(r.round.deadline,61000);r.end(true);assert.equal(a.score,0);assert.equal(b.score,120);assert.throws(()=>r.end(true),/finished/);
+ r.start({game:'bidding',cardId:'bidding-2'});r.bid(a.id,7);r.closeBidding();r.begin(1000);r.expire(61000);r.end(false);assert.equal(a.score,-35);assert.equal(r.round.points,-35);r.undo();assert.equal(a.score,0);
+});
+test('bidding is public and backup restores bidding, ready and paused challenges with negative scores',()=>{
+ const r=setup();r.score(r.teams[0].id,-40);r.start({game:'bidding'});
+ assert.ok(r.view({role:'display'}).round.prompt);assert.equal(Room.restore(r.backup()).round.phase,'bidding');
+ r.bid(r.teams[0].id,6);let restored=Room.restore(r.backup());assert.equal(restored.round.bid,6);assert.equal(restored.teams[0].score,-40);
+ r.closeBidding();assert.equal(Room.restore(r.backup()).round.phase,'ready');r.begin();restored=Room.restore(r.backup());assert.equal(restored.round.phase,'paused');assert.equal(restored.round.bid,6);
+ restored.begin();restored.end(false);assert.equal(restored.teams[0].score,-70);
+ const bad=r.backup();bad.room.round.bid=12;assert.throws(()=>Room.restore(bad),/mismatch/);
+});

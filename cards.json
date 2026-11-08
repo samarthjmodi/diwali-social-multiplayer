@@ -1542,5 +1542,45 @@
     "answer": "0°C",
     "forbidden": [],
     "status": "pending"
+  },
+  {
+    "id": "bidding-1",
+    "game": "bidding",
+    "prompt": "The travel montage: Bollywood songs about travelling, journeys, or hitting the road.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "bidding-2",
+    "game": "bidding",
+    "prompt": "Numbers game: Hindi films with a number in the title.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "bidding-3",
+    "game": "bidding",
+    "prompt": "Food on the marquee: Hindi films with a food or drink in the title.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "bidding-4",
+    "game": "bidding",
+    "prompt": "Bollywood films with most of their story set in the United States.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "bidding-5",
+    "game": "bidding",
+    "prompt": "Bollywood songs whose lyrics contain the title of the film they feature in.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
   }
 ]

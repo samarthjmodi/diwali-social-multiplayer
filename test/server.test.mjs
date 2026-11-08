@@ -27,3 +27,16 @@ test('20 guest clients receive approved state and live scoring; guest mutations 
  assert.equal((await x.api('/api/restore',backup.data,x.hostToken)).status,200);assert.notEqual(x.app.room.code,oldCode);assert.ok(x.app.room.players.every(p=>!p.approved));assert.equal(x.app.room.teams[0].score,5);
 });
 test('TV receives only public round data over the actual socket',async t=>{const x=await setup(t);x.app.room.roster(['A','B','C','D']);x.app.room.shuffle();x.app.room.players.forEach(p=>p.approved=true);x.app.room.lock(true);const p=x.app.room.players[0];x.app.room.start({game:'taboo',teamId:p.team,playerId:p.id,rehearsal:true});const join=await x.api('/api/join',{code:x.app.room.code,role:'display'});const tv=await x.connect(join.data.token);assert.equal(tv.state.round.prompt,undefined);assert.equal(tv.state.round.forbidden,undefined);assert.equal(tv.state.cards,undefined);tv.send('reveal');assert.match((await tv.wait(m=>m.type==='error')).message,/Host access/);});
+
+test('host manages bidding while guests and TV receive timer and negative scores',async t=>{
+ const x=await setup(t),host=await x.connect(x.hostToken);x.app.room.roster(['A','B','C','D']);x.app.room.shuffle();x.app.room.lock(true);
+ const join=await x.api('/api/join',{code:x.app.room.code,role:'display'}),tv=await x.connect(join.data.token);
+ host.send('start',{game:'bidding',cardId:'bidding-1'});await tv.wait(m=>m.type==='state'&&m.state.round?.phase==='bidding');
+ const team=x.app.room.teams[0];tv.send('bid',{teamId:team.id,value:99});assert.match((await tv.wait(m=>m.type==='error')).message,/Host access/);
+ host.send('bid',{teamId:team.id,value:8});await tv.wait(m=>m.type==='state'&&m.state.round?.bid===8);host.send('closeBidding');await host.wait(m=>m.type==='state'&&m.state.round?.phase==='ready');
+ host.send('begin');const active=(await tv.wait(m=>m.type==='state'&&m.state.round?.phase==='active')).state;assert.equal(active.round.duration,60);assert.ok(active.round.deadline);
+ host.send('end',{success:false});await tv.wait(m=>m.type==='state'&&m.state.teams[0].score===-40);
+ const backup=await x.api('/api/backup',undefined,x.hostToken);assert.equal((await x.api('/api/restore',backup.data,x.hostToken)).status,200);assert.equal(x.app.room.teams[0].score,-40);
+ const old=structuredClone(backup.data);old.room.cards=old.room.cards.filter(c=>c.game!=='bidding');old.room.used=[];old.room.round=null;
+ assert.equal((await x.api('/api/restore',old,x.hostToken)).status,200);assert.equal(x.app.room.cards.filter(c=>c.game==='bidding').length,5);
+});

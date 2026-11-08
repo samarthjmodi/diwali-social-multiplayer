@@ -52,3 +52,7 @@ Use **Test rehearsal cards** to include pending content. Every imported prompt s
 - `npm test` — run the offline room/state and local integration checks
 
 No question or prompt is approved automatically. Keep the existing standalone HTML for a no-network fallback.
+
+### Bollywood Bidding War
+
+The five user-selected categories are approved and ready to play. In **Run the games**, select **Bollywood Bidding War**, choose a category (or random), and prepare the round. Teams call bids aloud; the host records each increasing bid, closes bidding, and starts the fixed 60-second challenge. The highest bidder answers as a team. The host judges distinct valid answers and chooses Success (+10 × bid) or Failed (−5 × bid). Negative totals are supported. The public display and player phones show the category, highest bid, timer, and live scores. Unstarted bidding rounds can be cancelled without a score change. Old backups gain these five categories when restored if they did not already contain them.
