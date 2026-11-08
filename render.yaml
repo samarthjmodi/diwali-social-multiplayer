@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: diwali-social
+    runtime: node
+    plan: 0.5c-512mb
+    numInstances: 1
+    autoDeployTrigger: off
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 22
+      - key: HOST_PASSWORD
+        sync: false
+      - key: BIND_HOST
+        value: 0.0.0.0
