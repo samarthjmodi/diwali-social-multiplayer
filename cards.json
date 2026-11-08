@@ -24,14 +24,6 @@
     "status": "pending"
   },
   {
-    "id": "charades-4",
-    "game": "charades",
-    "prompt": "Opening a stubborn jar",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
     "id": "charades-5",
     "game": "charades",
     "prompt": "Eating a very spicy samosa",
@@ -56,22 +48,6 @@
     "status": "pending"
   },
   {
-    "id": "charades-8",
-    "game": "charades",
-    "prompt": "Wrapping a gift badly",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-9",
-    "game": "charades",
-    "prompt": "Looking for your missing phone",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
     "id": "charades-10",
     "game": "charades",
     "prompt": "Putting on a complicated outfit",
@@ -83,14 +59,6 @@
     "id": "charades-11",
     "game": "charades",
     "prompt": "Sneaking an extra gulab jamun",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-12",
-    "game": "charades",
-    "prompt": "Carrying too many shopping bags",
     "answer": "",
     "forbidden": [],
     "status": "pending"
@@ -112,14 +80,6 @@
     "status": "pending"
   },
   {
-    "id": "charades-15",
-    "game": "charades",
-    "prompt": "Trying not to sneeze",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
     "id": "charades-16",
     "game": "charades",
     "prompt": "Teaching a grandparent to take a selfie",
@@ -128,49 +88,9 @@
     "status": "pending"
   },
   {
-    "id": "charades-17",
-    "game": "charades",
-    "prompt": "Getting caught dancing alone",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
     "id": "charades-18",
     "game": "charades",
     "prompt": "Making perfectly round rotis",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-19",
-    "game": "charades",
-    "prompt": "Chasing a runaway balloon",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-20",
-    "game": "charades",
-    "prompt": "Walking in shoes that are too tight",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-21",
-    "game": "charades",
-    "prompt": "Finding a surprise gift",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-22",
-    "game": "charades",
-    "prompt": "Playing cricket in the living room",
     "answer": "",
     "forbidden": [],
     "status": "pending"
@@ -192,65 +112,9 @@
     "status": "pending"
   },
   {
-    "id": "charades-25",
-    "game": "charades",
-    "prompt": "A waiter balancing too many plates",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-26",
-    "game": "charades",
-    "prompt": "Taking a photo of your food",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-27",
-    "game": "charades",
-    "prompt": "Putting up decorations",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-28",
-    "game": "charades",
-    "prompt": "Winning a dance battle",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-29",
-    "game": "charades",
-    "prompt": "Losing at musical chairs",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-30",
-    "game": "charades",
-    "prompt": "Watching a scary movie",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
     "id": "charades-31",
     "game": "charades",
     "prompt": "Trying to park in a tiny space",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-32",
-    "game": "charades",
-    "prompt": "Flying a kite",
     "answer": "",
     "forbidden": [],
     "status": "pending"
@@ -288,97 +152,9 @@
     "status": "pending"
   },
   {
-    "id": "charades-37",
-    "game": "charades",
-    "prompt": "A magician whose trick fails",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-38",
-    "game": "charades",
-    "prompt": "Taking a freezing cold shower",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-39",
-    "game": "charades",
-    "prompt": "Walking a very enthusiastic dog",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
     "id": "charades-40",
     "game": "charades",
     "prompt": "Serving dinner to twenty guests",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-41",
-    "game": "charades",
-    "prompt": "Searching for matching socks",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-42",
-    "game": "charades",
-    "prompt": "Blowing up a balloon",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-43",
-    "game": "charades",
-    "prompt": "Trying to hear in a noisy room",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-44",
-    "game": "charades",
-    "prompt": "Holding a pose for a photo",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-45",
-    "game": "charades",
-    "prompt": "Cooking without a recipe",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-46",
-    "game": "charades",
-    "prompt": "Finding a spider in your shoe",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-47",
-    "game": "charades",
-    "prompt": "A very competitive board-game player",
-    "answer": "",
-    "forbidden": [],
-    "status": "pending"
-  },
-  {
-    "id": "charades-48",
-    "game": "charades",
-    "prompt": "Carrying a birthday cake",
     "answer": "",
     "forbidden": [],
     "status": "pending"
@@ -462,19 +238,6 @@
     "status": "pending"
   },
   {
-    "id": "taboo-7",
-    "game": "taboo",
-    "prompt": "Ladoo",
-    "answer": "",
-    "forbidden": [
-      "Round",
-      "Sweet",
-      "Ball",
-      "Dessert"
-    ],
-    "status": "pending"
-  },
-  {
     "id": "taboo-8",
     "game": "taboo",
     "prompt": "Fireworks",
@@ -540,32 +303,6 @@
     "status": "pending"
   },
   {
-    "id": "taboo-13",
-    "game": "taboo",
-    "prompt": "Mango",
-    "answer": "",
-    "forbidden": [
-      "Fruit",
-      "Yellow",
-      "Summer",
-      "Sweet"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-14",
-    "game": "taboo",
-    "prompt": "Sari",
-    "answer": "",
-    "forbidden": [
-      "Wear",
-      "Cloth",
-      "Dress",
-      "Drape"
-    ],
-    "status": "pending"
-  },
-  {
     "id": "taboo-15",
     "game": "taboo",
     "prompt": "Mehndi",
@@ -618,84 +355,6 @@
     "status": "pending"
   },
   {
-    "id": "taboo-19",
-    "game": "taboo",
-    "prompt": "Family",
-    "answer": "",
-    "forbidden": [
-      "Parents",
-      "Sibling",
-      "Relative",
-      "Home"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-20",
-    "game": "taboo",
-    "prompt": "Chutney",
-    "answer": "",
-    "forbidden": [
-      "Sauce",
-      "Dip",
-      "Mint",
-      "Tamarind"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-21",
-    "game": "taboo",
-    "prompt": "Dosa",
-    "answer": "",
-    "forbidden": [
-      "Crispy",
-      "Crepe",
-      "South",
-      "Rice"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-22",
-    "game": "taboo",
-    "prompt": "Paneer",
-    "answer": "",
-    "forbidden": [
-      "Cheese",
-      "Milk",
-      "Curry",
-      "Cubes"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-23",
-    "game": "taboo",
-    "prompt": "Naan",
-    "answer": "",
-    "forbidden": [
-      "Bread",
-      "Tandoor",
-      "Garlic",
-      "Butter"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-24",
-    "game": "taboo",
-    "prompt": "Popcorn",
-    "answer": "",
-    "forbidden": [
-      "Corn",
-      "Movie",
-      "Butter",
-      "Snack"
-    ],
-    "status": "pending"
-  },
-  {
     "id": "taboo-25",
     "game": "taboo",
     "prompt": "Karaoke",
@@ -735,19 +394,6 @@
     "status": "pending"
   },
   {
-    "id": "taboo-28",
-    "game": "taboo",
-    "prompt": "Rickshaw",
-    "answer": "",
-    "forbidden": [
-      "Three",
-      "Wheels",
-      "Ride",
-      "Auto"
-    ],
-    "status": "pending"
-  },
-  {
     "id": "taboo-29",
     "game": "taboo",
     "prompt": "Wedding",
@@ -761,123 +407,6 @@
     "status": "pending"
   },
   {
-    "id": "taboo-30",
-    "game": "taboo",
-    "prompt": "Monsoon",
-    "answer": "",
-    "forbidden": [
-      "Rain",
-      "Season",
-      "Cloud",
-      "Wet"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-31",
-    "game": "taboo",
-    "prompt": "Peacock",
-    "answer": "",
-    "forbidden": [
-      "Bird",
-      "Feather",
-      "Blue",
-      "Tail"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-32",
-    "game": "taboo",
-    "prompt": "Taj Mahal",
-    "answer": "",
-    "forbidden": [
-      "Agra",
-      "White",
-      "Marble",
-      "Monument"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-33",
-    "game": "taboo",
-    "prompt": "Coconut",
-    "answer": "",
-    "forbidden": [
-      "Shell",
-      "Water",
-      "Tree",
-      "White"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-34",
-    "game": "taboo",
-    "prompt": "Cardamom",
-    "answer": "",
-    "forbidden": [
-      "Spice",
-      "Green",
-      "Chai",
-      "Pod"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-35",
-    "game": "taboo",
-    "prompt": "Turmeric",
-    "answer": "",
-    "forbidden": [
-      "Yellow",
-      "Spice",
-      "Powder",
-      "Curry"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-36",
-    "game": "taboo",
-    "prompt": "Ginger",
-    "answer": "",
-    "forbidden": [
-      "Root",
-      "Spice",
-      "Tea",
-      "Chai"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-37",
-    "game": "taboo",
-    "prompt": "Pillow",
-    "answer": "",
-    "forbidden": [
-      "Sleep",
-      "Bed",
-      "Soft",
-      "Head"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-38",
-    "game": "taboo",
-    "prompt": "Umbrella",
-    "answer": "",
-    "forbidden": [
-      "Rain",
-      "Wet",
-      "Cover",
-      "Open"
-    ],
-    "status": "pending"
-  },
-  {
     "id": "taboo-39",
     "game": "taboo",
     "prompt": "Suitcase",
@@ -887,19 +416,6 @@
       "Pack",
       "Luggage",
       "Trip"
-    ],
-    "status": "pending"
-  },
-  {
-    "id": "taboo-40",
-    "game": "taboo",
-    "prompt": "Headphones",
-    "answer": "",
-    "forbidden": [
-      "Music",
-      "Ears",
-      "Listen",
-      "Sound"
     ],
     "status": "pending"
   },
@@ -1662,5 +1178,273 @@
     "answer": "",
     "forbidden": [],
     "status": "approved"
+  },
+  {
+    "id": "bidding-6",
+    "game": "bidding",
+    "prompt": "Shaadi playlist: Bollywood songs shown during a wedding, engagement, sangeet, or mehndi celebration in the film.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "bidding-7",
+    "game": "bidding",
+    "prompt": "Double trouble: Hindi films in which one actor plays two or more distinct characters. Name the film and the actor; each film counts once.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved"
+  },
+  {
+    "id": "skit-6",
+    "game": "skit",
+    "prompt": "Hanuman’s mountain delivery arrives at a Seattle apartment building with very strict HOA rules.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "brief": "An urgent delivery meets a front desk obsessed with package sizes, parking permits, and quiet hours. Everyone agrees the medicine is important, but nobody agrees where to put the mountain.",
+    "roles": [
+      "Hanuman, the delivery person with no time for paperwork",
+      "HOA president defending every building rule",
+      "Resident waiting urgently for the delivery",
+      "Concierge trying to find space in the package room",
+      "Neighbour whose parking spot is now a mountain"
+    ]
+  },
+  {
+    "id": "skit-7",
+    "game": "skit",
+    "prompt": "The Ram Setu team holds a project retrospective after successfully shipping a bridge to Lanka.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "brief": "The bridge is finished, but the retrospective turns into a debate about who deserves credit, why the deadline was impossible, and whether “just one more lane” was in scope. Keep the focus on everyday teamwork chaos.",
+    "roles": [
+      "Project manager determined to call everything a success",
+      "Engineer who did the work and kept the receipts",
+      "Product manager requesting last-minute features",
+      "Quality tester with a very long bug list",
+      "Vanar sena customer who just wants to cross the bridge"
+    ]
+  },
+  {
+    "id": "rank-1",
+    "game": "rank",
+    "prompt": "The royal calendar invite went wrong. Put these events in story order.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "Kaikeyi demands Ram’s exile",
+      "Ram breaks Shiva’s bow",
+      "Ram leaves Ayodhya",
+      "Ram marries Sita"
+    ],
+    "order": [
+      "B",
+      "D",
+      "A",
+      "C"
+    ],
+    "explanation": "The wedding comes before the planned coronation and the exile.",
+    "source": "https://lulla.net/en/ramayana/"
+  },
+  {
+    "id": "rank-2",
+    "game": "rank",
+    "prompt": "Forest getaway: sort the itinerary from first to last.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "Bharat visits Ram at Chitrakoot",
+      "Sita is abducted",
+      "Ram leaves Ayodhya",
+      "Ram settles at Panchavati"
+    ],
+    "order": [
+      "C",
+      "A",
+      "D",
+      "B"
+    ],
+    "explanation": "Bharat’s visit at Chitrakoot precedes the later Panchavati episode.",
+    "source": "https://lulla.net/en/ramayana/"
+  },
+  {
+    "id": "rank-3",
+    "game": "rank",
+    "prompt": "The golden-deer scam: reconstruct the incident report.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "Ravan abducts Sita",
+      "Ram pursues the deer",
+      "Lakshman leaves to find Ram",
+      "Sita sees the golden deer"
+    ],
+    "order": [
+      "D",
+      "B",
+      "C",
+      "A"
+    ],
+    "explanation": "The deer draws Ram away; Lakshman then leaves before the abduction.",
+    "source": "https://lulla.net/en/ramayana/"
+  },
+  {
+    "id": "rank-4",
+    "game": "rank",
+    "prompt": "Ram’s networking journey: order when he first meets these allies in the story.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "Shabari",
+      "Jatayu",
+      "Sugriva",
+      "Hanuman"
+    ],
+    "order": [
+      "B",
+      "A",
+      "D",
+      "C"
+    ],
+    "explanation": "Ram meets Jatayu before the abduction, visits Shabari during the search, and meets Hanuman before Sugriva.",
+    "source": "https://lulla.net/en/ramayana/"
+  },
+  {
+    "id": "rank-5",
+    "game": "rank",
+    "prompt": "Kishkindha’s leadership shuffle: put the milestones in order.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "Sugriva becomes king",
+      "Search parties set out for Sita",
+      "Vali is defeated",
+      "Ram and Sugriva form an alliance"
+    ],
+    "order": [
+      "D",
+      "C",
+      "A",
+      "B"
+    ],
+    "explanation": "The alliance leads to Vali’s defeat; Sugriva’s reign precedes the search mission.",
+    "source": "https://lulla.net/en/ramayana/"
+  },
+  {
+    "id": "rank-6",
+    "game": "rank",
+    "prompt": "Hanuman’s first Lanka trip: sort his status updates.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "Hanuman returns to Ram",
+      "Hanuman crosses the ocean",
+      "Hanuman finds Sita in Ashok Vatika",
+      "Hanuman’s tail is set on fire"
+    ],
+    "order": [
+      "B",
+      "C",
+      "D",
+      "A"
+    ],
+    "explanation": "He finds Sita before his capture and the tail-fire episode, then returns with news.",
+    "source": "https://lulla.net/en/ramayana/"
+  },
+  {
+    "id": "rank-7",
+    "game": "rank",
+    "prompt": "Lanka launch plan: put these big milestones in order.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "Hanuman returns with news of Sita",
+      "Ram’s army crosses to Lanka",
+      "Ravan is defeated",
+      "The bridge to Lanka is built"
+    ],
+    "order": [
+      "A",
+      "D",
+      "B",
+      "C"
+    ],
+    "explanation": "The scouting report comes before the bridge, crossing, and final victory.",
+    "source": "https://lulla.net/en/ramayana/"
+  },
+  {
+    "id": "rank-8",
+    "game": "rank",
+    "prompt": "The homecoming group chat: what happened first?",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "Ram returns to Ayodhya",
+      "Vibhishan is crowned king of Lanka",
+      "Ravan is defeated",
+      "Ram is crowned in Ayodhya"
+    ],
+    "order": [
+      "C",
+      "B",
+      "A",
+      "D"
+    ],
+    "explanation": "Lanka’s new king is crowned before the return journey and Ram’s coronation.",
+    "source": "https://lulla.net/en/ramayana/"
+  },
+  {
+    "id": "rank-9",
+    "game": "rank",
+    "prompt": "Epic binge-watch: arrange these chapters in reading order.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "Aranya Kanda",
+      "Kishkindha Kanda",
+      "Sundara Kanda",
+      "Ayodhya Kanda"
+    ],
+    "order": [
+      "D",
+      "A",
+      "B",
+      "C"
+    ],
+    "explanation": "Ayodhya is followed by the forest book, Kishkindha, and Hanuman’s Lanka mission in Sundara Kanda.",
+    "source": "https://lulla.net/en/ramayana/"
+  },
+  {
+    "id": "rank-10",
+    "game": "rank",
+    "prompt": "Season recap in four props: order when these become central to the story.",
+    "answer": "",
+    "forbidden": [],
+    "status": "approved",
+    "items": [
+      "The bridge to Lanka",
+      "The golden deer at Panchavati",
+      "Shiva’s bow at Sita’s wedding",
+      "Ram’s sandals taken by Bharat"
+    ],
+    "order": [
+      "C",
+      "D",
+      "B",
+      "A"
+    ],
+    "explanation": "Wedding, exile and Bharat’s sandals, the deer episode, then the bridge.",
+    "source": "https://lulla.net/en/ramayana/"
   }
 ]
